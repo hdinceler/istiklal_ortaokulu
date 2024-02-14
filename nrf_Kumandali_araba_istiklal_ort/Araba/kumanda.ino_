@@ -1,0 +1,44 @@
+//KUMANDA  - VERİCİ
+#include <SPI.h>
+#include <RF24.h>
+#include <nRF24L01.h>
+ 
+
+signed short rightSpeed=0;
+signed short leftSpeed=0;
+uint8_t far_durum=0;
+uint8_t korna_durum=0;
+char buff[5];
+
+RF24 radio(9, 10); // CE, CSN pimlerini belirtin
+char giden_komut[64]; 
+
+void setup() {
+ 
+
+  Serial.begin(9600);
+  radio.begin();
+  radio.openWritingPipe(0xF0F0F0F0E12E); // Bu kumandanın  
+  radio.setPALevel(RF24_PA_MIN);  // en düşük seviye enerji tüketimi , düşük sinyal menzili
+  
+  radio.stopListening(); // 0xF0F0F0F0E1LL numaralı boru hattını  dinle Dinleme Başlasın .Alıcı modunda çalış. 
+  Serial.println("Başladı");
+
+}
+void loop() {
+  while(!radio.available()){Serial.print(0);}
+
+ if( radio.available() ){
+
+    radio.read( &giden_komut , sizeof(giden_komut) );
+    Serial.println(giden_komut);
+     
+   
+
+ 
+    
+  } 
+  
+ 
+}
+
