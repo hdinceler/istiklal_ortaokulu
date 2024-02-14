@@ -30,8 +30,8 @@ int pin_mesafe_echo = 4;
 #define pin_korna 4
 #define pin_sag_teker_geri 5 //~PWM
 #define pin_sol_teker_ileri 6 //~PWM
-#define CE_PIN 7 // NRF için
-#define CSN_PIN 8 // NRF için
+#define CE_PIN 8 // NRF için
+#define CSN_PIN 7 // NRF için
 #define pin_sol_teker_geri 9 //~PWM
 
 RF24 radio(CE_PIN , CSN_PIN); // CE, CSN pimleri
