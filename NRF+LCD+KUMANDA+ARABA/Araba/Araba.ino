@@ -13,13 +13,13 @@ unsigned long baslangic_zamani_millis=0;;
 unsigned long baslangic_zamani_micros=0;;
 char buff[10];
 
-uint8_t x_degeri=0;
-uint8_t y_degeri=0;
-uint8_t joy_buton=0;
-uint8_t yukari_buton=0;
-uint8_t asagi_buton=0;
-uint8_t sag_buton=0;
-uint8_t sol_buton=0;
+unsigned int x_degeri=0;
+unsigned int y_degeri=0;
+unsigned int joy_buton=0;
+unsigned int yukari_buton=0;
+unsigned int asagi_buton=0;
+unsigned int sag_buton=0;
+unsigned int sol_buton=0;
 
 #define pin_on_far 2
 #define pin_sag_teker_ileri 3 //~PWM
@@ -70,7 +70,9 @@ void loop() {
   if (radio.available()) {
     
     radio.read(&gelen_komut, sizeof(gelen_komut));   
+   //Serial.println(gelen_komut);
     //gelen komut cümlesi parçalara ayrıştırılıyor
+    // Serial.print(gelen_komut);Serial.print("-");
     strcpy( buff , strtok( gelen_komut,  "," ) ); x_degeri= atoi(buff);
     strcpy( buff , strtok(NULL,  "," ) ); y_degeri= atoi(buff);
     strcpy( buff , strtok(NULL,  "," ) ); joy_buton= atoi(buff);
@@ -82,8 +84,11 @@ void loop() {
     digitalWrite(pin_on_far , yukari_buton );
     digitalWrite(pin_sis_fari,sol_buton );
     digitalWrite(pin_korna, sag_buton);
+    // Serial.print(x_degeri);Serial.print(",");
+    // Serial.print(y_degeri);
+     Serial.print(",\n");
 
-  //motor sürücü yönetimi
+  // motor sürücü yönetimi
   if (y_degeri >=526 && y_degeri < 1024){   ileri_git( map(y_degeri, 526,1023, 0,255) ); } 
   else if (y_degeri >= 0 && y_degeri < 520) {geri_git(map(y_degeri, 520, 0, 0, 255)); }
   else if (x_degeri >= 0 && x_degeri < 504) {sola_don(map(x_degeri, 504, 0, 0, 255)); }
@@ -91,21 +96,20 @@ void loop() {
   else dur();
   
     //LCD ekrana konum yazdırma işlemleri
-    Serial.println(gelen_komut);
     lcd.setCursor(1,0);lcd.print("X"); //Joystick X exseni
-    lcd.setCursor(5,0);lcd.print("Y");  //Joystick Y ekseni
-    lcd.setCursor(8,0);lcd.print("J");  //Joystick butonu
-    lcd.setCursor(10,0);lcd.print("U");  //yukarı düğme
-    lcd.setCursor(11,0);lcd.print("D");  //aşağı düğme
-    lcd.setCursor(12,0);lcd.print("R");  //sağ düğme
-    lcd.setCursor(13,0);lcd.print("L");  //sol düğme
+    lcd.setCursor(6,0);lcd.print("Y");  //Joystick Y ekseni
+    lcd.setCursor(10,0);lcd.print("J");  //Joystick butonu
+    lcd.setCursor(11,0);lcd.print("U");  //yukarı düğme
+    lcd.setCursor(12,0);lcd.print("D");  //aşağı düğme
+    lcd.setCursor(13,0);lcd.print("R");  //sağ düğme
+    lcd.setCursor(14,0);lcd.print("L");  //sol düğme
 
     lcd.setCursor(0,1);lcd.print(x_degeri);
-    lcd.setCursor(4,1);lcd.print(y_degeri);
-    lcd.setCursor(8,1);lcd.print(joy_buton);
-    lcd.setCursor(10,1);lcd.print(yukari_buton);
-    lcd.setCursor(11,1);lcd.print(asagi_buton);
-    lcd.setCursor(12,1);lcd.print(sag_buton);
-    lcd.setCursor(13,1);lcd.print(sol_buton);
+    lcd.setCursor(5,1);lcd.print(y_degeri);
+    lcd.setCursor(10,1);lcd.print(joy_buton);
+    lcd.setCursor(11,1);lcd.print(yukari_buton);
+    lcd.setCursor(12,1);lcd.print(asagi_buton);
+    lcd.setCursor(13,1);lcd.print(sag_buton);
+    lcd.setCursor(14,1);lcd.print(sol_buton);
   }  
 }
