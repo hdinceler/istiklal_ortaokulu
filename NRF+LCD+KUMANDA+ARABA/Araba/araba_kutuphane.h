@@ -70,22 +70,22 @@ uint8_t mesafe_olc_arka(){
  
 
 void ileri_git(uint8_t hiz){
-  Serial.print("ileri_hiz:");
-  Serial.print(hiz);
-  Serial.print("-");
+  if(serialDebug) {Serial.print("ileri_hiz:");}
+  if(serialDebug){ Serial.print(hiz);}
+  if(serialDebug){ Serial.print("\n");}
   analogWrite( pin_sag_teker_ileri, hiz );analogWrite( pin_sol_teker_ileri, hiz );analogWrite( pin_sag_teker_geri, 0 );analogWrite(pin_sol_teker_geri, 0 );
 }
 void geri_git(uint8_t hiz){
-  Serial.print("geri_hiz:");
-  Serial.print(hiz);
-  Serial.print("-");
+  if(serialDebug){ Serial.print("geri_hiz:");}
+  if(serialDebug){ Serial.print(hiz);}
+  if(serialDebug) {Serial.print("\n");}
   analogWrite( pin_sag_teker_ileri, 0 );analogWrite( pin_sol_teker_ileri, 0 );analogWrite( pin_sag_teker_geri, hiz );analogWrite(pin_sol_teker_geri, hiz );
 }
 
 void saga_don(uint8_t hiz){
-  Serial.print("saga hiz:");
-  Serial.print(hiz);
-  Serial.print("-");
+  if(serialDebug) Serial.print("saga hiz:");
+ if(serialDebug)  Serial.print(hiz);
+ if(serialDebug)  Serial.print("\n");
   analogWrite( pin_sag_teker_ileri, 0 );analogWrite( pin_sol_teker_ileri, hiz );analogWrite( pin_sag_teker_geri, hiz  );analogWrite(pin_sol_teker_geri, 0 );
 
 }
@@ -93,7 +93,7 @@ void saga_don(uint8_t hiz){
 void sola_don(uint8_t hiz){
   Serial.print("sola hiz:");
   Serial.print(hiz);
-  Serial.print("-");
+  Serial.print("\n");
   analogWrite( pin_sag_teker_ileri, hiz );analogWrite( pin_sol_teker_ileri, 0 );analogWrite( pin_sag_teker_geri, 0 );analogWrite(pin_sol_teker_geri, hiz  );
 
 }
