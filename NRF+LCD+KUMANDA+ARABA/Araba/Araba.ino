@@ -1,7 +1,7 @@
 #include "nRF24L01.h"
 #include "RF24.h"
 #include <SPI.h>
-
+#define serialDebug 1  //seriali aç kapat
 #define yakinlik_siniri  5   // araba bu cm cinsinden degerden  daha yakın cisim algılarsa dursun
 long zaman=0;
 long mesafe_on=0;
@@ -35,8 +35,9 @@ uint8_t pin_mesafe_trig_arka = A3;
 #include "araba_kutuphane.h"
 
 RF24 radio(CE_PIN , CSN_PIN); // CE, CSN pimleri
-char gelen_komut[64] = "";
-
+char gelen_komut[32] = "";
+uint8_t top_speed=100;
+ 
 void setup() {
   pinMode( pin_on_far, OUTPUT);
   pinMode( pin_sag_teker_ileri , OUTPUT);
@@ -50,7 +51,7 @@ void setup() {
   pinMode(pin_mesafe_echo_on, INPUT);
   pinMode(pin_mesafe_trig_arka, OUTPUT);
   pinMode(pin_mesafe_echo_arka, INPUT);
-  Serial.begin(9600);
+  if(serialDebug) Serial.begin(9600);
   radio.begin();
   radio.openReadingPipe(1, 0xF0F0F0F0E12E); // Vericinin yazma hattı adresi
   radio.startListening();
@@ -61,11 +62,9 @@ void loop() {
  
 //RADYO İLETİŞİM
   if (radio.available()) {
-    
     radio.read(&gelen_komut, sizeof(gelen_komut));   
    //Serial.println(gelen_komut);
-    //gelen komut cümlesi parçalara ayrıştırılıyor
-    // Serial.print(gelen_komut);Serial.print("-");
+ 
     strcpy( buff , strtok( gelen_komut,  "," ) ); x_degeri= atoi(buff);
     strcpy( buff , strtok(NULL,  "," ) ); y_degeri= atoi(buff);
     strcpy( buff , strtok(NULL,  "," ) ); joy_buton= atoi(buff);
@@ -73,19 +72,28 @@ void loop() {
     strcpy( buff , strtok(NULL,  "," ) ); asagi_buton= atoi(buff);
     strcpy( buff , strtok(NULL,  "," ) ); sag_buton = atoi(buff);
     strcpy( buff , strtok(NULL,  "," ) ); sol_buton= atoi(buff);
-    //  komut parçaları çıkış pinlerine dağıtılıyor
     digitalWrite(pin_on_far , yukari_buton );
     digitalWrite(pin_sis_fari,sol_buton );
     digitalWrite(pin_korna, sag_buton);
-    // Serial.print(x_degeri);Serial.print(",");
-    // Serial.print(y_degeri);
 
-  // motor sürücü yönetimi
-  if (y_degeri >=530 && y_degeri < 1024){   ileri_git( map(y_degeri, 530,1023, 0,255) ); } 
-  else if (y_degeri >= 0 && y_degeri < 510) {geri_git(map(y_degeri, 510, 0, 0, 255)); }
-  else if (x_degeri >= 0 && x_degeri < 500) {sola_don(map(x_degeri, 500, 0, 0, 255)); }
-  else if (x_degeri > 515 && x_degeri < 1024) {saga_don(map(x_degeri, 515, 1023, 0, 255)); }
-  else dur();
-   
-  }  
+    mesafe_on=mesafe_olc_on;
+    mesafe_arka=mesafe_olc_arka;
+      if(serialDebug){ 
+          Serial.print("on mesafe:");
+          Serial.print(mesafe_on);
+          Serial.print("-arka mesafe:");
+          Serial.print(mesafe_arka);
+          Serial.print("\n");
+      }
+    //  if(mesafe_on<yakinlik_siniri){dur();delay(500);geri_git(170);delay(100);dur();}
+    //  if(mesafe_arka<yakinlik_siniri){dur();delay(500);ileri_git(170);delay(100);dur();}
+    //  if(mesafe_on>yakinlik_siniri && mesafe_arka>yakinlik_siniri){
+        if (y_degeri >=550 && y_degeri < 1024){   ileri_git( map(y_degeri, 550,1023, 0,top_speed) ); } 
+        else if (y_degeri >= 0 && y_degeri < 500) {geri_git(map(y_degeri, 500, 0, 0, top_speed)); }
+        else if (x_degeri >= 0 && x_degeri < 500) {sola_don(map(x_degeri, 500, 0, 0, top_speed)); }
+        else if (x_degeri > 550 && x_degeri < 1024) {saga_don(map(x_degeri, 555, 1023, 0, top_speed)); }
+        else dur();
+    //  }
+
+  }else dur();
 }
