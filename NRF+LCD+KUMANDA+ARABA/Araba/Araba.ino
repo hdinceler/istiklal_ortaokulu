@@ -8,7 +8,7 @@ long mesafe_on=0;
 long mesafe_arka=0;
 unsigned long baslangic_zamani_millis=0;
 unsigned long baslangic_zamani_micros=0;
-char buff[10];
+char buff[32];
 
 unsigned int x_degeri=0;
 unsigned int y_degeri=0;
@@ -36,7 +36,7 @@ uint8_t pin_mesafe_trig_arka = A3;
 
 RF24 radio(CE_PIN , CSN_PIN); // CE, CSN pimleri
 char gelen_komut[32] = "";
-uint8_t top_speed=100;
+uint8_t top_speed=255;
  
 void setup() {
   pinMode( pin_on_far, OUTPUT);
@@ -63,7 +63,7 @@ void loop() {
 //RADYO İLETİŞİM
   if (radio.available()) {
     radio.read(&gelen_komut, sizeof(gelen_komut));   
-   //Serial.println(gelen_komut);
+   Serial.println(gelen_komut);
  
     strcpy( buff , strtok( gelen_komut,  "," ) ); x_degeri= atoi(buff);
     strcpy( buff , strtok(NULL,  "," ) ); y_degeri= atoi(buff);
@@ -75,25 +75,25 @@ void loop() {
     digitalWrite(pin_on_far , yukari_buton );
     digitalWrite(pin_sis_fari,sol_buton );
     digitalWrite(pin_korna, sag_buton);
-
-    mesafe_on=mesafe_olc_on;
-    mesafe_arka=mesafe_olc_arka;
-      if(serialDebug){ 
-          Serial.print("on mesafe:");
-          Serial.print(mesafe_on);
-          Serial.print("-arka mesafe:");
-          Serial.print(mesafe_arka);
-          Serial.print("\n");
-      }
-    //  if(mesafe_on<yakinlik_siniri){dur();delay(500);geri_git(170);delay(100);dur();}
-    //  if(mesafe_arka<yakinlik_siniri){dur();delay(500);ileri_git(170);delay(100);dur();}
+//gnd 12 0
+    // // mesafe_on=mesafe_olc_on;
+    // // mesafe_arka=mesafe_olc_arka;
+    // //   if(serialDebug){ 
+    // //       Serial.print("on mesafe:");
+    // //       Serial.print(mesafe_on);
+    // //       Serial.print("-arka mesafe:");
+    // //       Serial.print(mesafe_arka);
+    // //       Serial.print("\n");
+    // //   }
+    // //  if(mesafe_on<yakinlik_siniri){dur();delay(500);geri_git(170);delay(100);dur();}
+    // //  if(mesafe_arka<yakinlik_siniri){dur();delay(500);ileri_git(170);delay(100);dur();}
     //  if(mesafe_on>yakinlik_siniri && mesafe_arka>yakinlik_siniri){
-        if (y_degeri >=550 && y_degeri < 1024){   ileri_git( map(y_degeri, 550,1023, 0,top_speed) ); } 
-        else if (y_degeri >= 0 && y_degeri < 500) {geri_git(map(y_degeri, 500, 0, 0, top_speed)); }
-        else if (x_degeri >= 0 && x_degeri < 500) {sola_don(map(x_degeri, 500, 0, 0, top_speed)); }
-        else if (x_degeri > 550 && x_degeri < 1024) {saga_don(map(x_degeri, 555, 1023, 0, top_speed)); }
+        if (x_degeri >= 0 && x_degeri < 470) {sola_don(map(x_degeri, 470, 0, 0, top_speed)); }
+        else if (x_degeri > 555 && x_degeri < 1024) {saga_don(map(x_degeri, 555, 1023, 0, top_speed)); }
+        else if (y_degeri >=550 && y_degeri < 1024){   ileri_git( map(y_degeri, 550,1023, 0,top_speed) ); } 
+        else if (y_degeri >= 0 && y_degeri < 470) {geri_git(map(y_degeri, 470, 0, 0, top_speed)); }
         else dur();
-    //  }
+    // //  }
 
   }else dur();
 }
