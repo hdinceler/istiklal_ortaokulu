@@ -5,8 +5,8 @@
 
 using namespace websockets;
 
-const char* ssid = "infoTracker";
-const char* password = "Lc%gutHJ,]}:H.MtMQ3ZCt9.KcY>1*Hyh=g@4X>h14X}t,5B24%U^i)_m~:Z@ep";
+const char* ssid = "ssid";
+const char* password = "pass";
 const char* websockets_server = "wss://haysaf.com/api"; // WebSocket sunucusu URL'si
 
 WebsocketsClient client;
